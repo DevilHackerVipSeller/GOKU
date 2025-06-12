@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GOKU SYSTEM - Ultra AI Prediction (Advanced)</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <!-- El Messiri Font Only -->
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #10b981;
+      --dark: #0f172a;
+      --darker: #020617;
+      --light: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.1);
+      --text-color: #ffffff;
+    }
+    body {
+      font-family: "El Messiri", sans-serif;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+      color: var(--text-color);
+      min-height: 100vh;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+    .btn-primary {
+      background: linear-gradient(
+        135deg,
+        var(--primary) 0%,
+        var(--primary-dark) 100%
+      );
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    }
+    .accent-badge {
+      background: linear-gradient(135deg, var(--accent) 0%, #059669 100%);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    .svg-stroke-text {
+      stroke: var(--primary);
+      stroke-width: 2;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 0;
+      fill: transparent;
+      animation: dash 5s linear infinite;
+      font-weight: 800;
+    }
+    @keyframes dash {
+      0% { stroke-dashoffset: 1000; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .navbar {
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+    .win-status {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid var(--accent);
+    }
+    .loss-status {
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid #ef4444;
+    }
+    .pending-status {
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid #f59e0b;
+    }
+    .status-indicator {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      background: rgba(0,0,0,0.08);
+    }
+    .win-indicator {
+      background-color: #10b981;
+      color: #fff;
+      border: 2px solid #059669;
+    }
+    .loss-indicator {
+      background-color: #ef4444;
+      color: #fff;
+      border: 2px solid #b91c1c;
+    }
+    .pending-indicator {
+      background-color: #f59e0b;
+      color: #fff;
+      border: 2px solid #b45309;
+    }
+    .trend-upward { color: #22c55e; }
+    .trend-downward { color: #ef4444; }
+    .trend-stable { color: #cbd5e0; }
+    .trend-fluctuating { color: #f59e0b; }
+    .pattern-match { color: #facc15; }
+    .nav-icon {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 0.5em;
+      width: 1.5em;
+      height: 1.5em;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    /* Spinner animation */
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #fff;
+      border-top: 3px solid #f59e0b;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-sizing: border-box;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    /* Trophy bounce animation */
+    .trophy-anim {
+      animation: trophy-bounce 1s infinite;
+    }
+    @keyframes trophy-bounce {
+      0%, 100% { transform: translateY(0);}
+      20% { transform: translateY(-8px);}
+      40% { transform: translateY(-4px);}
+      60% { transform: translateY(-12px);}
+      80% { transform: translateY(-2px);}
+    }
+    /* Skull shake animation */
+    .skull-anim {
+      animation: skull-shake 0.7s infinite;
+    }
+    @keyframes skull-shake {
+      0%, 100% { transform: rotate(0);}
+      20% { transform: rotate(-10deg);}
+      40% { transform: rotate(8deg);}
+      60% { transform: rotate(-6deg);}
+      80% { transform: rotate(4deg);}
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+  <div class="glass-card w-full max-w-2xl p-6 mb-20">
+    <div class="text-center mb-8">
+      <svg width="100%" height="80px" viewBox="0 0 600 80">
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="62" class="svg-stroke-text">
+          GOKU X ULTRA
+        </text>
+      </svg>
+      <p class="text-gray-400 mt-2">AI PREDICTION SYSTEM</p>
+    </div>
+    <div id="dashboardPage" class="space-y-6 page">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-xl font-bold">
+          <svg class="nav-icon text-blue-400" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <path d="M16 2v4"></path>
+            <path d="M8 2v4"></path>
+            <path d="M3 10h18"></path>
+          </svg>
+          Period: <span id="periodDisplay" class="font-mono">-</span>
+        </div>
+        <div class="text-sm text-gray-400">
+          <svg class="nav-icon inline" viewBox="0 0 24 24" fill="none">
+            <path d="M4 4v5h.582"></path>
+            <path d="M20 20v-5h-.581"></path>
+            <path d="M5.5 8A7.5 7.5 0 1 1 12 19.5"></path>
+          </svg>
+          Auto-updating
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M3 17l6-6 4 4 8-8"></path>
+                <path d="M14 7h7v7"></path>
+              </svg>
+              Prediction
+            </h3>
+            <span class="accent-badge text-white px-3 py-1 rounded-full text-sm">Advanced AI</span>
+          </div>
+          <div class="text-center py-4">
+            <div id="predictionDisplay" class="text-5xl font-bold mb-2" title="Current AI Prediction">-</div>
+            <div id="oppositeNumberDisplay" class="text-gray-400">Opposite: -</div>
+            <div id="patternDisplay" class="text-xs mt-2"></div>
+            <div id="confidenceDisplay" class="text-xs mt-1 text-yellow-400 font-semibold"></div>
+            <div id="periodCalcDisplay" class="text-xs mt-1 text-blue-300 font-semibold">Period Calc: -</div>
+          </div>
+        </div>
+        <div class="glass-card p-6">
+          <h3 class="text-lg font-bold mb-4">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 6v6l4 2"></path>
+            </svg>
+            Statistics
+          </h3>
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span>Win Rate:</span>
+              <span id="accuracy" class="font-bold">0%</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Wins:</span>
+              <span id="wins" class="font-bold">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Losses:</span>
+              <span id="losses" class="font-bold">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Server:</span>
+              <span class="text-green-400 font-bold">
+                <svg class="nav-icon inline text-green-400" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 18v-6a3 3 0 1 1 6 0v6"></path>
+                  <path d="M4 18v-6a8 8 0 1 1 16 0v6"></path>
+                  <path d="M2 21h20"></path>
+                </svg>
+                Connected
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-6 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-lg font-bold mb-2">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+              Logic Used
+            </h3>
+            <div id="logicUsedDisplay" class="text-sm">-</div>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold mb-2">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M2 12h20"></path>
+                <path d="M12 2v20"></path>
+              </svg>
+              Trend Analysis
+            </h3>
+            <div id="trendDisplay" class="text-sm">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-4 mt-6">
+        <h3 class="text-lg font-bold mb-2">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M3 3v5h5"></path>
+            <path d="M3.05 13A9 9 0 1 0 12 3v9l7 4"></path>
+          </svg>
+          Recent Results
+        </h3>
+        <div id="recentResults" class="flex flex-wrap gap-2"></div>
+      </div>
+    </div>
+    <div id="historyPage" class="hidden page">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M3 3v5h5"></path>
+            <path d="M3.05 13A9 9 0 1 0 12 3v9l7 4"></path>
+          </svg>
+          Prediction History
+        </h2>
+        <button onclick="showPage('dashboard')" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Back
+        </button>
+      </div>
+      <div id="historyContainer" class="space-y-4"></div>
+    </div>
+    <div id="themesPage" class="hidden page">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2v20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          UI Themes
+        </h2>
+        <button onclick="showPage('dashboard')" class="btn-primary px-4 py-2 rounded-lg flex items-center">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Back
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <button onclick="changeTheme('default')" class="glass-card p-4 text-center rounded-xl border-2 border-indigo-500">
+          <div class="h-16 w-16 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-indigo-700 mb-2"></div>
+          <span>Default</span>
+        </button>
+        <button onclick="changeTheme('emerald')" class="glass-card p-4 text-center rounded-xl">
+          <div class="h-16 w-16 mx-auto rounded-full bg-gradient-to-br from-emerald-500 to-green-600 mb-2"></div>
+          <span>Emerald</span>
+        </button>
+        <button onclick="changeTheme('rose')" class="glass-card p-4 text-center rounded-xl">
+          <div class="h-16 w-16 mx-auto rounded-full bg-gradient-to-br from-rose-500 to-pink-600 mb-2"></div>
+          <span>Rose</span>
+        </button>
+        <button onclick="changeTheme('amber')" class="glass-card p-4 text-center rounded-xl">
+          <div class="h-16 w-16 mx-auto rounded-full bg-gradient-to-br from-amber-500 to-orange-600 mb-2"></div>
+          <span>Amber</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="navbar fixed bottom-0 left-0 right-0 p-4 flex justify-around max-w-2xl mx-auto">
+    <button onclick="showPage('dashboard')" class="btn-primary px-6 py-3 rounded-full flex items-center">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M3 12L12 3l9 9"></path>
+        <path d="M9 21V9h6v12"></path>
+      </svg>
+      Dashboard
+    </button>
+    <button onclick="showPage('history')" class="btn-primary px-6 py-3 rounded-full flex items-center">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M3 3v5h5"></path>
+        <path d="M3.05 13A9 9 0 1 0 12 3v9l7 4"></path>
+      </svg>
+      History
+    </button>
+    <button onclick="showPage('themes')" class="btn-primary px-6 py-3 rounded-full flex items-center">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none">
+        <path d="M2 19l2-7 7 7 7-7 2 7"></path>
+        <path d="M4 21h16"></path>
+        <path d="M12 17v4"></path>
+      </svg>
+      Premium
+    </button>
+  </div>
+  <script>
+    // Theme logic
+    const themes = {
+      default: {
+        "--primary": "#3b82f6",
+        "--primary-dark": "#2563eb",
+        "--accent": "#10b981",
+        "--dark": "#0f172a",
+        "--darker": "#020617",
+        "--text-color": "#ffffff",
+      },
+      emerald: {
+        "--primary": "#10b981",
+        "--primary-dark": "#059669",
+        "--accent": "#3b82f6",
+        "--dark": "#064e3b",
+        "--darker": "#022c22",
+        "--text-color": "#ffffff",
+      },
+      rose: {
+        "--primary": "#f43f5e",
+        "--primary-dark": "#e11d48",
+        "--accent": "#f59e0b",
+        "--dark": "#881337",
+        "--darker": "#4c0519",
+        "--text-color": "#ffffff",
+      },
+      amber: {
+        "--primary": "#f59e0b",
+        "--primary-dark": "#d97706",
+        "--accent": "#f43f5e",
+        "--dark": "#92400e",
+        "--darker": "#451a03",
+        "--text-color": "#ffffff",
+      },
+    };
+    function changeTheme(theme) {
+      const root = document.documentElement;
+      const selected = themes[theme];
+      for (let key in selected) {
+        root.style.setProperty(key, selected[key]);
+      }
+    }
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach((p) => p.classList.add("hidden"));
+      document.getElementById(pageId + "Page").classList.remove("hidden");
+    }
+
+    // --- Advanced AI/ML-inspired Prediction Logic ---
+    let historyData = [];
+    let lastFetchedPeriod = null;
+    let lastPrediction = null;
+    let lastOppositeNumber = null;
+
+    // Utility: Get opposite number based on prediction and period calculation
+    function getOppositeNumber(prediction, periodCalcFinal) {
+      const small = [0, 1, 2, 3, 4];
+      const big = [5, 6, 7, 8, 9];
+      let arr = prediction === "BIG" ? small : big;
+      // Use period calculation to bias the opposite number
+      let index = Math.floor(Math.abs(periodCalcFinal) % 5); // Mod 5 to map to array index
+      return arr[index] !== undefined ? arr[index] : arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Detect repeating patterns with confidence score
+    function detectPattern(history) {
+      if (history.length < 8) return { found: false, confidence: 0 };
+      let lastSeq = history.slice(0, 4).map((x) => x.prediction).join("");
+      let count = 0;
+      for (let i = 4; i < history.length - 4; i++) {
+        let seq = history.slice(i, i + 4).map((x) => x.prediction).join("");
+        if (seq === lastSeq) count++;
+      }
+      if (count > 0) {
+        let confidence = Math.min(100, count * 25);
+        return { found: true, confidence };
+      }
+      return { found: false, confidence: 0 };
+    }
+
+    // Calculate momentum score (weighted recent results, heavier on recent)
+    function calculateMomentum(history) {
+      let score = 0;
+      for (let i = 0; i < Math.min(10, history.length); i++) {
+        let weight = i < 2 ? 1 / (i + 1) * 2 : 1 / (i + 1);
+        score += (history[i].result >= 5 ? 1 : -1) * weight;
+      }
+      return score;
+    }
+
+    // Calculate volatility (how often prediction changes in recent history)
+    function calculateVolatility(history) {
+      if (history.length < 5) return 0;
+      let changes = 0;
+      for (let i = 0; i < 4; i++) {
+        if (history[i].prediction !== history[i + 1].prediction) changes++;
+      }
+      return changes / 4;
+    }
+
+    // Helper function for improved period-based calculation
+    function calculatePeriodAdjustment(period, lastResult) {
+      // Get last two digits of the period
+      const lastTwoDigits = period.slice(-2);
+      const digit1 = parseInt(lastTwoDigits[0] || 0);
+      const digit2 = parseInt(lastTwoDigits[1] || 0);
+      
+      // Improved calculation: (D1 * D2) - (D1 + D2) to balance high values
+      const product = digit1 * digit2;
+      const sum = digit1 + digit2;
+      const periodFactor = product - sum;
+      
+      // If no last result exists, use 0
+      const actualLastResult = lastResult !== "-" ? parseInt(lastResult) : 0;
+      
+      // Combine with last result, normalize to a range (-10 to 20) for balance
+      let finalValue = periodFactor + actualLastResult;
+      finalValue = Math.max(-10, Math.min(20, finalValue)); // Cap the range
+      
+      return {
+        product: product,
+        sum: sum,
+        periodFactor: periodFactor,
+        finalValue: finalValue
+      };
+    }
+
+    // Calculate dynamic threshold based on history
+    function calculateDynamicThreshold(history) {
+      if (history.length < 5) return 0; // Neutral default if little history
+      let recentResults = history.slice(0, 5).map(item => parseInt(item.result) || 0);
+      let avgResult = recentResults.reduce((a, b) => a + b, 0) / recentResults.length;
+      // Dynamic threshold: average of recent results, adjusted slightly
+      return avgResult;
+    }
+
+    // Advanced AI Prediction combining multiple factors for balanced prediction
+    function advancedAIPredict(history, periodCalc, nextPeriod) {
+      const pattern = detectPattern(history);
+      const momentum = calculateMomentum(history);
+      const volatility = calculateVolatility(history);
+      const dynamicThreshold = calculateDynamicThreshold(history);
+      
+      // Base prediction from momentum
+      let basePred = momentum >= 0 ? "BIG" : "SMALL";
+      
+      // Adjust based on pattern if confidence is high
+      if (pattern.found && pattern.confidence >= 70) {
+        basePred = history[3]?.prediction || basePred;
+      }
+      
+      // Incorporate improved period calculation with dynamic threshold
+      let periodPred = periodCalc.finalValue > dynamicThreshold ? "BIG" : "SMALL";
+      
+      // Balance with recent history: check proportion of BIG in last 5 predictions
+      let recentBigs = 0;
+      for (let i = 0; i < 5 && i < history.length; i++) {
+        if (history[i].prediction === "BIG") recentBigs++;
+      }
+      const bigRatio = recentBigs / Math.max(1, Math.min(5, history.length));
+      
+      // Final prediction: combine momentum, pattern, and period, avoid BIG bias
+      let finalPred = basePred;
+      if (bigRatio > 0.6 && periodCalc.finalValue <= dynamicThreshold) {
+        finalPred = "SMALL"; // Counteract BIG bias if too frequent
+      } else if (bigRatio < 0.4 && periodCalc.finalValue > dynamicThreshold) {
+        finalPred = "BIG"; // Encourage BIG if underrepresented
+      } else {
+        finalPred = periodPred; // Use period calc with dynamic threshold
+      }
+      
+      // Calculate confidence
+      let confidence = 60 + Math.min(40, Math.abs(momentum) * 15);
+      if (pattern.found && pattern.confidence >= 70) {
+        confidence += pattern.confidence * 0.3;
+      }
+      if (volatility > 0.6) confidence -= 25;
+      confidence = Math.max(40, Math.min(100, confidence));
+      
+      // After 3 losses, flip prediction and boost confidence, consider period calc
+      if (
+        history.length >= 3 &&
+        history[0].resultStatus === "LOSS" &&
+        history[1].resultStatus === "LOSS" &&
+        history[2].resultStatus === "LOSS" &&
+        confidence < 80
+      ) {
+        finalPred = finalPred === "BIG" ? "SMALL" : "BIG";
+        confidence += 15;
+      }
+      
+      return {
+        prediction: finalPred,
+        patternFound: pattern.found,
+        patternConfidence: pattern.confidence,
+        confidence: confidence.toFixed(1),
+      };
+    }
+
+    // Fetch game result from API
+    async function fetchGameResult() {
+      try {
+        let response = await fetch(
+          "https://api.bdg88zf.com/api/webapi/GetNoaverageEmerdList",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              pageSize: 10,
+              pageNo: 1,
+              typeId: 1,
+              language: 0,
+              random: "4a0522c6ecd8410496260e686be2a57c",
+              signature: "334B5E70A0C9B8918B0B15E517E2069C",
+              timestamp: Math.floor(Date.now() / 1000),
+            }),
+          }
+        );
+        let data = await response.json();
+        return data?.data?.list?.[0] || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Update stats UI
+    function updateStats() {
+      const wins = historyData.filter((item) => item.resultStatus === "WIN").length;
+      const losses = historyData.filter((item) => item.resultStatus === "LOSS").length;
+      const total = wins + losses;
+      const accuracy = total > 0 ? ((wins / total) * 100).toFixed(2) : 0;
+      document.getElementById("wins").textContent = wins;
+      document.getElementById("losses").textContent = losses;
+      document.getElementById("accuracy").textContent = `${accuracy}%`;
+    }
+
+    // Determine win/loss for last prediction
+    function updateLastStatus(actualNumber) {
+      const actualPred = actualNumber >= 5 ? "BIG" : "SMALL";
+      const match =
+        actualNumber == lastOppositeNumber || actualPred === lastPrediction;
+      return match ? "WIN" : "LOSS";
+    }
+
+    // Update recent results UI (simple icons)
+    function updateRecentResults() {
+      let recent = historyData.slice(0, 10);
+      let html = recent
+        .map((item) => {
+          let statusClass =
+            item.resultStatus === "WIN"
+              ? "win-indicator"
+              : item.resultStatus === "LOSS"
+              ? "loss-indicator"
+              : "pending-indicator";
+          let icon =
+            item.resultStatus === "WIN"
+              ? '<svg class="nav-icon" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7"></path></svg>'
+              : item.resultStatus === "LOSS"
+              ? '<svg class="nav-icon" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>'
+              : '<svg class="nav-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>';
+          return `<div class="status-indicator ${statusClass}" title="Period ${item.period}">${icon}</div>`;
+        })
+        .join("");
+      document.getElementById("recentResults").innerHTML = html;
+    }
+
+    // Update full history UI with animated icons
+    function updateHistory() {
+      const container = document.getElementById("historyContainer");
+      if (!container) return;
+      if (historyData.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-500">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" style="font-size:2.5rem;">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <path d="M8 9h8"></path>
+              <path d="M8 13h6"></path>
+              <path d="M8 17h4"></path>
+            </svg>
+            <p>No history yet</p>
+          </div>`;
+        return;
+      }
+      container.innerHTML = historyData
+        .map((item) => {
+          const statusClass =
+            item.resultStatus === "WIN"
+              ? "win-status"
+              : item.resultStatus === "LOSS"
+              ? "loss-status"
+              : "pending-status";
+          let statusIndicator = "";
+          if (item.resultStatus === "Pending") {
+            statusIndicator = `<div class="status-indicator pending-indicator"><div class="spinner"></div></div>`;
+          } else if (item.resultStatus === "WIN") {
+            statusIndicator = `<div class="status-indicator win-indicator"><svg class="trophy-anim" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M17 17a5 5 0 0 0 5-5V5H2v7a5 5 0 0 0 5 5"/><path d="M7 5V2h10v3"/></svg></div>`;
+          } else if (item.resultStatus === "LOSS") {
+            statusIndicator = `<div class="status-indicator loss-indicator"><svg class="skull-anim" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="M8 15c1.333 1 2.667 1 4 0"/></svg></div>`;
+          }
+          const trendClass =
+            item.trend === "Strong Upward"
+              ? "trend-upward"
+              : item.trend === "Strong Downward"
+              ? "trend-downward"
+              : item.trend === "Fluctuating"
+              ? "trend-fluctuating"
+              : "trend-stable";
+          return `
+            <div class="glass-card p-4 ${statusClass}">
+              <div class="flex justify-between items-start">
+                <div>
+                  <div class="font-bold">Period ${item.period}</div>
+                  <div class="text-sm">
+                    <span class="font-medium">Prediction:</span> ${item.prediction}
+                  </div>
+                  <div class="text-sm">
+                    <span class="font-medium">Opposite:</span> ${item.oppositeNumber}
+                  </div>
+                </div>
+                <div class="text-right">
+                  ${statusIndicator}
+                  <div class="text-xs text-gray-400">${item.result || "-"}</div>
+                </div>
+              </div>
+              <div class="mt-2 text-xs text-gray-400">
+                ${item.logicUsed || "No logic info"}
+              </div>
+              <div class="mt-1 text-xs">
+                Trend: <span class="${trendClass}">${item.trend}</span>
+              </div>
+            </div>`;
+        })
+        .join("");
+    }
+
+    // Main update function to fetch new results and predict
+    async function updatePrediction() {
+      let result = await fetchGameResult();
+      if (!result || result.issueNumber === lastFetchedPeriod) return;
+
+      // Update last result if pending
+      if (historyData.length > 0 && historyData[0].resultStatus === "Pending") {
+        const actualNumber = Number(result.number);
+        const status = updateLastStatus(actualNumber);
+        historyData[0].result = actualNumber;
+        historyData[0].resultStatus = status;
+      }
+
+      // New prediction for next period
+      if (result.issueNumber !== lastFetchedPeriod) {
+        let nextPeriodFull = (BigInt(result.issueNumber) + 1n).toString();
+        let nextPeriod = nextPeriodFull.slice(-4);
+
+        // Perform improved period-based calculation
+        const lastResult = historyData.length > 0 ? historyData[0].result : "-";
+        const periodCalc = calculatePeriodAdjustment(nextPeriod, lastResult);
+        
+        // Get prediction with period calculation
+        let ai = advancedAIPredict(historyData, periodCalc, nextPeriod);
+
+        // Determine trend based on recent predictions
+        let bigs = 0,
+          smalls = 0;
+        for (let i = 0; i < 5 && i < historyData.length; i++) {
+          if (historyData[i].prediction === "BIG") bigs++;
+          else if (historyData[i].prediction === "SMALL") smalls++;
+        }
+        let trend = "Stable";
+        if (bigs >= 4) trend = "Strong Upward";
+        else if (smalls >= 4) trend = "Strong Downward";
+        else if (bigs === smalls && bigs > 0) trend = "Fluctuating";
+
+        let logicUsed = ai.patternFound
+          ? `Pattern Match Model (Confidence: ${ai.patternConfidence}%)`
+          : "Hybrid Momentum/Pattern/Volatility/Period Model";
+
+        // Get opposite number based on period calculation
+        lastPrediction = ai.prediction;
+        lastOppositeNumber = getOppositeNumber(lastPrediction, periodCalc.finalValue);
+        
+        // Update UI elements
+        document.getElementById("periodDisplay").textContent = nextPeriod;
+        document.getElementById("predictionDisplay").textContent = lastPrediction;
+        document.getElementById(
+          "oppositeNumberDisplay"
+        ).textContent = `Opposite: ${lastOppositeNumber}`;
+        document.getElementById("logicUsedDisplay").textContent = logicUsed;
+        document.getElementById("trendDisplay").textContent = trend;
+        document.getElementById("patternDisplay").innerHTML = ai.patternFound
+          ? `<span class="pattern-match">Pattern detected: High confidence (${ai.patternConfidence}%)</span>`
+          : "";
+        document.getElementById(
+          "confidenceDisplay"
+        ).textContent = `Prediction Confidence: ${ai.confidence}%`;
+        document.getElementById(
+          "periodCalcDisplay"
+        ).textContent = `Period Calc: ${periodCalc.product} (Digits Product) - ${periodCalc.sum} (Digits Sum) + Last Result (${lastResult}) = ${periodCalc.finalValue}`;
+
+        // Add new prediction to history
+        historyData.unshift({
+          period: nextPeriod,
+          prediction: lastPrediction,
+          oppositeNumber: lastOppositeNumber,
+          result: "-",
+          resultStatus: "Pending",
+          logicUsed: logicUsed + ` | Period Calc: ${periodCalc.finalValue}`,
+          trend: trend,
+        });
+      }
+
+      updateStats();
+      updateHistory();
+      updateRecentResults();
+
+      lastFetchedPeriod = result.issueNumber;
+    }
+
+    // Initialize UI
+    showPage("dashboard");
+    setInterval(updatePrediction, 5000);
+  </script>
+</body>
+</html>
